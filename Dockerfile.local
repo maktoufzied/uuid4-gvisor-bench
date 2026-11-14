@@ -1,0 +1,10 @@
+# Local rig: plain Linux and gVisor (runsc) in one image.
+FROM python:3.13-slim
+ARG GVISOR_ARCH=aarch64
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates strace bzip2 && rm -rf /var/lib/apt/lists/*
+RUN cd /tmp && curl -fsSL -O https://storage.googleapis.com/gvisor/releases/release/latest/${GVISOR_ARCH}/gvisor.tar.bz2 \
+ && curl -fsSL -O https://storage.googleapis.com/gvisor/releases/release/latest/${GVISOR_ARCH}/gvisor.tar.bz2.sha512 \
+ && sha512sum -c gvisor.tar.bz2.sha512 && tar -xjf gvisor.tar.bz2 -C /usr/local/bin && rm -f /tmp/gvisor.tar.bz2*
+RUN pip install --no-cache-dir uuid-utils==1.2.0
+WORKDIR /bench
+COPY bench.py pickup.py proof.py run.sh /bench/

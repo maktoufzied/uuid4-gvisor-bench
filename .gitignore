@@ -1,0 +1,6 @@
+.env*
+livekit.toml
+out/
+*.log
+__pycache__/
+.venv/
